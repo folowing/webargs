@@ -25,6 +25,7 @@ Example: ::
 """
 import asyncio
 import json
+import ujson
 
 from aiohttp import web
 from aiohttp import web_exceptions
@@ -91,7 +92,11 @@ class AIOHTTPParser(AsyncParser):
         if json_data is None:
             if not (req.has_body and is_json_request(req)):
                 return core.missing
-            self._cache['json'] = json_data = yield from req.json()
+            try:
+                self._cache['json'] = json_data = yield from req.json(
+                    loads=ujson.loads)
+            except ValueError as e:
+                raise core.WebargsError('decode json body error')
         return core.get_value(json_data, name, field, allow_many_nested=True)
 
     def parse_headers(self, req, name, field):
