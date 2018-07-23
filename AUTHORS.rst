@@ -6,6 +6,7 @@ Lead
 ----
 
 * Steven Loria <sloria1@gmail.com>
+* Jérôme Lafréchoux <https://github.com/lafrech> 
 
 Contributors (chronological)
 ----------------------------
@@ -33,3 +34,4 @@ Contributors (chronological)
 * Florian S. <https://github.com/nebularazer>
 * @daniel98321 <https://github.com/daniel98321>
 * @Itayazolay <https://github.com/Itayazolay>
+* @Reskov <https://github.com/Reskov>

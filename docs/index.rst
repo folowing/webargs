@@ -9,7 +9,7 @@ webargs
     A friendly library for parsing HTTP request arguments.
 
 
-Release v\ |version|. (:ref:`Changelog <changelog>`)
+Release v\ |version|. (:doc:`Changelog <changelog>`)
 
 webargs is a Python library for parsing HTTP request arguments, with built-in support for popular web frameworks, including Flask, Django, Bottle, Tornado, Pyramid, webapp2, Falcon, and aiohttp.
 
@@ -22,16 +22,16 @@ webargs is a Python library for parsing HTTP request arguments, with built-in su
 
     app = Flask(__name__)
 
-    hello_args = {
-        'name': fields.Str(required=True)
-    }
+    hello_args = {"name": fields.Str(required=True)}
 
-    @app.route('/')
+
+    @app.route("/")
     @use_args(hello_args)
     def index(args):
-        return 'Hello ' + args['name']
+        return "Hello " + args["name"]
 
-    if __name__ == '__main__':
+
+    if __name__ == "__main__":
         app.run()
 
     # curl http://localhost:5000/\?name\='World'
@@ -81,7 +81,7 @@ Get It Now
 
     pip install -U webargs
 
-Ready to get started? Go on to the :ref:`Quickstart tutorial <quickstart>` or check out some `examples <https://github.com/sloria/webargs/tree/dev/examples>`_.
+Ready to get started? Go on to the :doc:`Quickstart tutorial <quickstart>` or check out some `examples <https://github.com/sloria/webargs/tree/dev/examples>`_.
 
 User Guide
 ----------

@@ -2,17 +2,13 @@
 marshmallow
 
 # Task running
-invoke==0.15.0
+invoke==1.1.0
 
 # Testing
-pytest==3.0.7
-tox==2.6.0
+pytest==3.6.3
+tox==3.1.2
 mock==2.0.0
-webtest==2.0.26
-
-# Distribution
-wheel
-twine==1.8.1
+webtest==2.0.30
 
 # Web frameworks
 Flask>=0.10.1
@@ -23,6 +19,11 @@ pyramid>=1.5.2
 webapp2>=3.0.0b1
 falcon>=0.3.0
 
+# Pre-commit hooks (runs black)
+pre-commit==1.10.3
+
 # Syntax checking
-flake8==3.3.0
-flake8-quotes==0.9.0
+flake8==3.5.0
+
+# Install this package in development mode
+-e '.'

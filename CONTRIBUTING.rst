@@ -33,9 +33,17 @@ Setting Up for Local Development
     # After activating your virtualenv
     $ pip install -r dev-requirements.txt
 
-3. Install webargs in develop mode. ::
+    # If you're using a Python 3 environment
+    $ pip install -r dev-requirements-py3.txt
 
-   $ pip install -e .
+3. (Optional, but recommended) Install the pre-commit hooks, which will format and lint your git staged files. ::
+
+    # The pre-commit CLI was installed above
+    $ pre-commit install
+
+.. note::
+
+    webargs uses `black <https://github.com/ambv/black>`_ for code formatting, which is only compatible with Python>=3.6. Therefore, the ``pre-commit install`` command will only work if you have the ``python3.6`` interpreter installed.
 
 Git Branch Structure
 ++++++++++++++++++++
@@ -45,9 +53,6 @@ Webargs abides by the following branching model:
 
 ``dev``
     Current development branch. **New features should branch off here**.
-
-``pypi``
-    Current production release on PyPI.
 
 ``X.Y-line``
     Maintenance branch for release ``X.Y``. **Bug fixes should be sent to the most recent release branch.**. The maintainer will forward-port the fix to ``dev``. Note: exceptions may be made for bug fixes that introduce large code changes.
@@ -82,11 +87,16 @@ Pull Requests
 Running Tests
 +++++++++++++
 
-To run all tests: ::
+To run all tests (including syntax checking): ::
 
     $ invoke test
 
-To run tests on Python 2.7, 3.4, 3.5, and 3.6 virtual environments (must have each interpreter installed): ::
+To run tests without syntax-checking (use this if you don't have the
+``python3.6`` interpreter): ::
+
+    $ invoke test --no-syntax
+
+To run tests on Python 2.7, 3.5, 3.6, and 3.7 virtual environments (must have each interpreter installed): ::
 
     $ tox
 

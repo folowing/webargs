@@ -1,6 +1,139 @@
 Changelog
 ---------
 
+4.0.0 (2018-07-15)
+******************
+
+Features:
+
+* *Backwards-incompatible*: Custom error handlers receive the
+  `marshmallow.Schema` instance as the third argument. Update any
+  functions decorated with `Parser.error_handler` to take a ``schema``
+  argument, like so:
+
+.. code-block:: python
+
+    # 3.x
+    @parser.error_handler
+    def handle_error(error, req):
+        raise CustomError(error.messages)
+
+
+    # 4.x
+    @parser.error_handler
+    def handle_error(error, req, schema):
+        raise CustomError(error.messages)
+
+
+See `marshmallow-code/marshmallow#840 (comment) <https://github.com/marshmallow-code/marshmallow/issues/840#issuecomment-403481686>`_
+for more information about this change.
+
+Bug fixes:
+
+* *Backwards-incompatible*: Rename ``webargs.async`` to
+  ``webargs.asyncparser`` to fix compatibility with Python 3.7
+  (:issue:`240`). Thanks :user:`Reskov` for the catch and patch.
+
+
+Other changes:
+
+* *Backwards-incompatible*: Drop support for Python 3.4 (:pr:`243`). Python 2.7 and
+  >=3.5 are supported.
+* *Backwards-incompatible*: Drop support for marshmallow<2.15.0.
+  marshmallow>=2.15.0 and >=3.0.0b12 are officially supported.
+* Use `black <https://github.com/ambv/black>`_ with `pre-commit <https://pre-commit.com/>`_
+  for code formatting (:pr:`244`).
+
+3.0.2 (2018-07-05)
+******************
+
+Bug fixes:
+
+* Fix compatibility with marshmallow 3.0.0b12 (:pr:`242`). Thanks :user:`lafrech`.
+
+3.0.1 (2018-06-06)
+******************
+
+Bug fixes:
+
+* Respect `Parser.DEFAULT_VALIDATION_STATUS` when a `status_code` is not
+  explicitly passed to `ValidationError` (:issue:`180`). Thanks :user:`foresmac` for
+  finding this.
+
+Support:
+
+* Add "Returning HTTP 400 Responses" section to docs (:issue:`180`).
+
+3.0.0 (2018-05-06)
+******************
+
+Changes:
+
+* *Backwards-incompatible*: Custom error handlers receive the request object as the second
+  argument. Update any functions decorated with ``Parser.error_handler`` to take a `req` argument, like so:
+
+.. code-block:: python
+
+    # 2.x
+    @parser.error_handler
+    def handle_error(error):
+        raise CustomError(error.messages)
+
+
+    # 3.x
+    @parser.error_handler
+    def handle_error(error, req):
+        raise CustomError(error.messages)
+
+* *Backwards-incompatible*: Remove unused ``instance`` and ``kwargs`` arguments of ``argmap2schema``.
+* *Backwards-incompatible*: Remove ``Parser.load`` method (``Parser`` now calls ``Schema.load`` directly).
+
+These changes shouldn't affect most users. However, they might break custom parsers calling these methods. (:pr:`222`)
+
+* Drop support for aiohttp<3.0.0.
+
+2.1.0 (2018-04-01)
+******************
+
+Features:
+
+* Respect ``data_key`` field argument (in marshmallow 3). Thanks
+  :user:`lafrech`.
+
+2.0.0 (2018-02-08)
+******************
+
+Changes:
+
+* Drop support for aiohttp<2.0.0.
+* Remove use of deprecated `Request.has_body` attribute in
+  aiohttpparser (:issue:`186`). Thanks :user:`ariddell` for reporting.
+
+1.10.0 (2018-02-08)
+*******************
+
+Features:
+
+* Add support for marshmallow>=3.0.0b7 (:pr:`188`). Thanks
+  :user:`lafrech`.
+
+Deprecations:
+
+* Support for aiohttp<2.0.0 is deprecated and will be removed in webargs 2.0.0.
+
+1.9.0 (2018-02-03)
+******************
+
+Changes:
+
+* ``HTTPExceptions`` raised with `webargs.flaskparser.abort` will always
+  have the ``data`` attribute, even if no additional keywords arguments
+  are passed (:pr:`184`). Thanks :user:`lafrech`.
+
+Support:
+
+* Fix examples in examples/ directory.
+
 1.8.1 (2017-07-17)
 ******************
 
@@ -105,13 +238,14 @@ Bug fixes:
     # Before
     @app.errorhandler(422)
     def handle_validation_error(err):
-        return jsonify({'errors': err.messages}), 422
+        return jsonify({"errors": err.messages}), 422
+
 
     # After
     @app.errorhandler(422)
     def handle_validation_error(err):
         # The marshmallow.ValidationError is available on err.exc
-        return jsonify({'errors': err.exc.messages}), 422
+        return jsonify({"errors": err.exc.messages}), 422
 
 
 1.3.4 (2016-06-11)
@@ -260,32 +394,26 @@ Your code will need to be updated to use ``Fields`` rather than ``Args``.
     from webargs import Arg
 
     args = {
-        'name': Arg(str, required=True)
-        'password': Arg(str, validate=lambda p: len(p) >= 6),
-        'display_per_page': Arg(int, default=10),
-        'nickname': Arg(multiple=True),
-        'Content-Type': Arg(dest='content_type', location='headers'),
-        'location': Arg({
-            'city': Arg(str),
-            'state': Arg(str)
-        })
-        'meta': Arg(dict),
+        "name": Arg(str, required=True),
+        "password": Arg(str, validate=lambda p: len(p) >= 6),
+        "display_per_page": Arg(int, default=10),
+        "nickname": Arg(multiple=True),
+        "Content-Type": Arg(dest="content_type", location="headers"),
+        "location": Arg({"city": Arg(str), "state": Arg(str)}),
+        "meta": Arg(dict),
     }
 
     # New API
     from webargs import fields
 
     args = {
-        'name': fields.Str(required=True)
-        'password': fields.Str(validate=lambda p: len(p) >= 6),
-        'display_per_page': fields.Int(missing=10),
-        'nickname': fields.List(fields.Str()),
-        'content_type': fields.Str(load_from='Content-Type'),
-        'location': fields.Nested({
-            'city': fields.Str(),
-            'state': fields.Str()
-        }),
-        'meta': fields.Dict(),
+        "name": fields.Str(required=True),
+        "password": fields.Str(validate=lambda p: len(p) >= 6),
+        "display_per_page": fields.Int(missing=10),
+        "nickname": fields.List(fields.Str()),
+        "content_type": fields.Str(load_from="Content-Type"),
+        "location": fields.Nested({"city": fields.Str(), "state": fields.Str()}),
+        "meta": fields.Dict(),
     }
 
 Features:
